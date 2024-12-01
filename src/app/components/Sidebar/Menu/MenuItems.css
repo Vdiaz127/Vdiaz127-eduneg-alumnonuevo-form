@@ -1,0 +1,18 @@
+.imgRedonda { 
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+}
+
+.containerMenu {
+    background-color: blue;
+    padding: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.menuitem:hover{
+    padding: 10px;
+    border-radius: 5%;
+    background-color: rgb(0, 89, 255);
+    cursor: pointer;
+}
