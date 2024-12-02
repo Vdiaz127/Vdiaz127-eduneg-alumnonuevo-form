@@ -2,6 +2,8 @@
     height: 200px;
     width: 200px;
     border-radius: 50%;
+    max-width: max-content;
+    max-height: max-content;
 }
 
 .containerMenu {
