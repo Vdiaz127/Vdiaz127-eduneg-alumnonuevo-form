@@ -27,19 +27,16 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
       )
   }
 
-
   export default function MenuItems() {
     return (
-      <div className=" flex flex-col items-center containerMenu">
-        <Profile  nombre={'Pedro Sanchez'} imgUrl={'https://picsum.photos/200'}></Profile>
-        <div className=''>
-          <PanelItem  PanelName={'DashBoard'} Icon={HouseIcon}></PanelItem>
-          <PanelItem  PanelName={'Estudiantes'} Icon={SchoolIcon}></PanelItem>
-          <PanelItem  PanelName={'Profesores'} Icon={PeopleAltIcon}></PanelItem>
-          <PanelItem  PanelName={'Asignaturas'} Icon={LibraryBooksIcon}></PanelItem>
-        </div>
-        
-        
+      <div className="flex flex-col items-center containerMenu p-4 space-y-4">
+        <Profile nombre="Pedro Sanchez" imgUrl="https://picsum.photos/200" />
+        <PanelItem PanelName="DashBoard" Icon={HouseIcon} />
+        <PanelItem PanelName="Estudiantes" Icon={SchoolIcon} />
+        <PanelItem PanelName="Profesores" Icon={PeopleAltIcon} />
+        <PanelItem PanelName="Asignaturas" Icon={LibraryBooksIcon} />
       </div>
     );
   }
+
+  

@@ -1,21 +1,21 @@
-.imgRedonda { 
-    height: 200px;
-    width: 200px;
+
+  .imgRedonda {
+    width: 10rem;
+    height: 10rem;
     border-radius: 50%;
-    max-width: max-content;
-    max-height: max-content;
-}
-
-.containerMenu {
-    background-color: blue;
-    padding: 20px;
-    transition: background-color 0.3s ease;
-    
-}
-
-.menuitem:hover{
-    padding: 10px;
-    border-radius: 5%;
-    background-color: rgb(0, 89, 255);
+    object-fit: cover;
+  }
+  
+  .menuitem {
     cursor: pointer;
-}
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .menuitem:hover {
+    transform: scale(1.1);
+  }
+  
+  .icon-class {
+    font-size: 1.5rem;
+  }
+  

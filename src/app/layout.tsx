@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Form - new student",
+  title: "Formulario Alumno Nuevo",
   description: "formulario para agregar alumno nuevo",
 };
 
@@ -27,11 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        style={{display: "flex",  height: "max-content"}}
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        
+        className={`flex ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Menu></Menu>
-        {children}
+
+        <Menu className={""}></Menu>
+        <main className="flex-1 ml-0 lg:ml-64">{children}</main>
       </body>
     </html>
   );
