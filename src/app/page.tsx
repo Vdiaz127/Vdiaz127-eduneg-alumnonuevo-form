@@ -1,5 +1,5 @@
 
-import NewStudentForm from "./components/Form/NewStudentForm"
+import NewStudentForm from "../components/Form/NewStudentForm"
 
 export default function Home() {
   return (

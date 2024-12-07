@@ -6,7 +6,7 @@ import SelectInput from "./SelectInput";
 const API_BASE_URL = "https://api.countrystatecity.in/v1";
 const API_KEY = process.env.NEXT_PUBLIC_CSC_API_KEY;
 
-export default function LocationSelector({  }) {
+export default function LocationSelector({ handleChangeInput }) {
   const [countriesMap, setCountriesMap] = useState({});
   const [statesMap, setStatesMap] = useState({});
   const [cities, setCities] = useState([]);
@@ -15,7 +15,6 @@ export default function LocationSelector({  }) {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
 
-  // Cargar países
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -73,6 +72,8 @@ export default function LocationSelector({  }) {
 
     const countryCode = countriesMap[countryName];
     if (countryCode) fetchStates(countryCode);
+
+    handleChangeInput("Pais", countryName ? "valid" : "invalid", countryName);
   };
 
   const handleStateChange = (stateName) => {
@@ -83,30 +84,29 @@ export default function LocationSelector({  }) {
     const stateCode = statesMap[stateName];
     const countryCode = countriesMap[selectedCountry];
     if (countryCode && stateCode) fetchCities(countryCode, stateCode);
+
+    handleChangeInput("Estado", stateName ? "valid" : "invalid", stateName);
   };
 
   const handleCityChange = (cityName) => {
     setSelectedCity(cityName);
+
+    handleChangeInput("Ciudad", cityName ? "valid" : "invalid", cityName);
   };
 
   return (
     <div>
-      {/* Select para país */}
       <SelectInput
         labelFor="Pais"
         options={Object.keys(countriesMap).map((name) => ({ value: name, label: name }))}
         handleChangeInput={(name, status, value) => handleCountryChange(value)}
       />
-
-      {/* Select para estado */}
       <SelectInput
         labelFor="Estado"
         options={Object.keys(statesMap).map((name) => ({ value: name, label: name }))}
         handleChangeInput={(name, status, value) => handleStateChange(value)}
         disabled={!Object.keys(statesMap).length}
       />
-
-      {/* Select para ciudad */}
       <SelectInput
         labelFor="Ciudad"
         options={cities}

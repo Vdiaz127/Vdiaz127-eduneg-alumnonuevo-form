@@ -3,8 +3,17 @@
 import { useState } from "react";
 import Input from "./Input";
 import SelectInput from "./SelectInput";
-import Location from "./Location";
-import {ValidacionesNombreApellido} from "./validaciones";
+import LocationSelector from "./Location";
+import { 
+  validarTelefono, 
+  validarNombreApellido, 
+  validarCorreo, 
+  validarFechaNacimiento, 
+  validarCedula 
+} from "./validaciones";
+
+import { useRouter } from 'next/navigation'
+
 
 const sedes = [
   { label: "Puerto Ordaz", value: "Puerto Ordaz" },
@@ -44,14 +53,13 @@ function SectionForm({ title, children }) {
 }
 
 
-const handleValidate = (fieldName, isValid) => {
-  console.log(`Validación para ${fieldName}: ${isValid}`);
-};
+
 
 
 export default function NewStudentForm() {
 
   const [inputsStatus, setInputsStatus] = useState({});
+  const router = useRouter();
 
   const handleInputChange = (name, status, value) => {
     setInputsStatus((prev) => ({
@@ -59,19 +67,51 @@ export default function NewStudentForm() {
       [name]: { status, value },
     }));
 
-    //const validos = verificarInputsValidos(inputsStatus);
-    console.log("Campos con estado 'valid':",inputsStatus);
+    //console.log("Campos con estado 'valid':",inputsStatus);
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData(e.target); // 'e.target' es el formulario
-    const formValues = Object.fromEntries(formData.entries()); // Convierte el FormData a un objeto
   
-    console.log("Datos del formulario:", formValues);
-    return formValues;
+    // Verificar que todos los campos estén en estado "valid"
+    const camposInvalidos = Object.entries(inputsStatus).filter(
+      ([_, { status }]) => status !== "valid"
+    );
+  
+    if (camposInvalidos.length > 0) {
+      alert(`Existen campos incompletos o inválidos: ${camposInvalidos.map(([name]) => name).join(", ")}`);
+      return;
+    }
+  
+    const formData = new FormData(e.target);
+    const formValues = Object.fromEntries(formData.entries());
+  
+    try {
+      const response = await fetch("/api/students", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formValues),
+
+      });
+  
+      if (response.ok) {
+        alert("Estudiante creado con éxito");
+        
+        
+        router.push("/api/students"); 
+      } 
+      
+  
+    } catch (error) {
+      alert("Error al conectar con el servidor");
+    }
   };
+  
+  
+  
+  
 
   return (
     <form onSubmit={handleSubmit} className="p-6 max-w-screen-xl mx-auto">
@@ -81,10 +121,12 @@ export default function NewStudentForm() {
         <SelectInput
           labelFor="Sede"
           options={sedes}
+          handleChangeInput={handleInputChange}
         />
         <SelectInput
           labelFor="Carrera"
           options={carreras}
+          handleChangeInput={handleInputChange}
         />
       </SectionForm>
 
@@ -92,28 +134,37 @@ export default function NewStudentForm() {
         <Input
           labelFor="Nombre"
           type="text"
-          validate={ValidacionesNombreApellido}
+          validate={validarNombreApellido}
           placeholderText="Ingresa tu nombre"
-          handleChangeInput={handleInputChange}
-        />
-        <Input
-          labelFor="Correo"
-          type="email"
           handleChangeInput={handleInputChange}
         />
         <Input
           labelFor="Apellidos"
           type="text"
+          validate={validarNombreApellido}
+          placeholderText="Ingresa tu Apellido"
           handleChangeInput={handleInputChange}
         />
         <Input
+          labelFor="Correo"
+          type="email"
+          placeholderText="persona@gmail.com"
+          validate={validarCorreo}
+          handleChangeInput={handleInputChange}
+        />
+        
+        <Input
           labelFor="Telefono"
           type="tel"
+          validate={validarTelefono}
+          placeholderText="Ej. 041233311144"
           handleChangeInput={handleInputChange}
         />
         <Input
           labelFor="Cedula"
           type="tel"
+          validate={validarCedula}
+          placeholderText="Ej. 10011011"
           handleChangeInput={handleInputChange}
         />
       </SectionForm>
@@ -122,21 +173,22 @@ export default function NewStudentForm() {
         <Input
           labelFor="Fecha De Nacimiento"
           type="date"
+          validate={validarFechaNacimiento}
           handleChangeInput={handleInputChange}
-          
         />
 
-        <Location />
+        <LocationSelector handleChangeInput={handleInputChange} />
+
 
         <SelectInput
           labelFor="Estado Civil"
           options={EstadoCivil}
-          
+          handleChangeInput={handleInputChange}
         />
         <SelectInput
           labelFor="Sexo"
           options={sexos}
-          
+          handleChangeInput={handleInputChange}
         />
       </SectionForm>
 

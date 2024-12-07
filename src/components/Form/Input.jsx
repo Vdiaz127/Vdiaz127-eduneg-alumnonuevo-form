@@ -7,20 +7,25 @@ export default function Input({ labelFor, type, validate, placeholderText, handl
 
   const handleChange = (e) => {
     const value = e.target.value;
-  
-    const validationResult = validate ? validate(value) : { status: "empty", errorMessage: "" };
-  
-    
-    setStatus(validationResult.status);
-  
-    
-    setMensajeError(validationResult.errorMessage);
+    let validationResult = { status: "empty", errorMessage: "" };
 
-    if (handleChange) {
-      handleChangeInput(labelFor, validationResult.status, value);
+    if (value == ""){
+      setStatus("empty");
+      setMensajeError("");
+    }else{
+      validationResult = validate(value) ;
+      setStatus(validationResult.status);
+      setMensajeError(validationResult.errorMessage);
     }
-  
-    //console.log(validationResult); 
+
+    
+    
+    
+    
+    if (handleChange) {
+      handleChangeInput(labelFor, validationResult.status , value);
+    }
+    
   };
 
   const getBorderClass = () => {
@@ -49,6 +54,7 @@ export default function Input({ labelFor, type, validate, placeholderText, handl
         onChange={handleChange}
         className={`border p-2 rounded-lg ${getBorderClass()} focus:outline-none`}
         placeholder={placeholderText}
+        required
       />
       {mensajeInput()}
       
