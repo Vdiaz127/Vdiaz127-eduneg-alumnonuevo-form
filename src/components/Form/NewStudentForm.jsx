@@ -100,7 +100,7 @@ export default function NewStudentForm() {
         alert("Estudiante creado con éxito");
         
         
-        router.push("/api/students"); 
+        router.push("/students"); 
       } 
       
   

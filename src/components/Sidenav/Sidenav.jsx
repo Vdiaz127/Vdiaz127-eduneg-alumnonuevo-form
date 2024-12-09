@@ -26,7 +26,7 @@ export default function Sidenav({ className }) {
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
         lg:translate-x-0`}
       >
-        <MenuItems />
+        <MenuItems onItemSelected={toggleMenu} />
       </nav>
 
       {/* Capa de fondo oscurecida para pantallas pequeñas */}
