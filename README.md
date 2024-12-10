@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+#Formulario para el registro de alumos - Nextjs
 
-## Getting Started
+´<p>
+	Para la realizacion del formulario primero analice las partes del formulario realizado en figma que se podian componetizar en formas apartes,  cuales de estos componentes ocupan una "jerarquia" mayor a la otra , y cuales componentes tenian una misma jerarquia , es decir , compartir el mismo padre. 
+	Separando en :
+	- Sidenav (que debia replicarse en todas las vistas, para la facil navegacion y "visualizacion" de perfil)
+	- Fomulario (hacerlo un componente aparte de cualquier otro elemento, para que si se tiene que agregar informacion extra a una pagina no se vea muy cargada esta pagina)
+	- Inputs (tipo select y inputs donde se tenga que escribir/digitar)
+*No deje que la estetica (espaciados , colores, etc ) estuviera sujeta a props en los componentes de x tipo para que todos compartieran el mismo sistema , en caso de querer ajustar algo mejor seria desde el mismo componente para que se replicara en todos los componentes iguales y se viera uniforme el formulario en ese aspecto.*
+</p>
 
-First, run the development server:
+##Para el Sidenav:
+<p>
+Se realizo como componente aparte, pero su composicion tambien se dividio en otros componentes , a mi parecer para mas facil manejo de caracteristicas individuales:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**MenuItems.jsx **   que maneja componentes como:
+- Profile (Props: nombre de la persona y Url de la imagen de la persona)
+- PanelItem: son los elementos que componen la navegacion de navbar (Props: Nombre del panel (nombre de la pagina), Icono para representacion visual del panel, Direccion para la redireccio , funcion para cerrar el nav una vez clickeado un item (vista telefono))
+- Por ultimo se exporta **MenuItems:** que retorna la aglomeracion de el **Profile** y los items de que se definan 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+En **Sidenav.jsx**: utilizo el componente que retorna **MenuItems**, pero ademas defino la estetica que rodea a los elementos, y su comportamiento responsive y el uso de Hook de useState para abrir y cerrar el nav en vistas pequeñas.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+``
+const [isOpen, setIsOpen] = useState(false);
+const toggleMenu = () => setIsOpen(!isOpen);
+``
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Que lo que hace basicamente es alternar un valor de "isOpen" (booleano) y de alli determinar si abrir o cerrar el nav , mediante los estilos de Tailwind
 
-## Learn More
+</p>
 
-To learn more about Next.js, take a look at the following resources:
+##Para el formulario 
+<p> El componente **SectionForm** organiza las secciones del formulario,  Recibe un título y los elementos hijos como props. </p>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+###Función handleInputChange
+<p> Cada campo del formulario tiene un estado independiente que indica si su contenido es válido o no. La función `handleInputChange` gestiona estos estados y actualiza el componente principal en tiempo real. </p>
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+###Sometimiento del Formulario
+<p> Al enviar el formulario, se verifica que todos los campos estén en estado "válido" ("valid"). Si hay errores, se alerta al usuario sobre los campos que necesitan ser corregidos. En caso de éxito, se envían los datos al servidor a través de una petición `POST`. </p>
 
-## Deploy on Vercel
+###Validaciones
+<p> Se implementaron validaciones personalizadas para cada campo utilizando funciones específicas que verifican el formato de los datos (nombre, correo, teléfono, etc.). Estas funciones están centralizadas en un archivo de utilidades (`validaciones.js`) para facilitar su mantenimiento y reutilización. </p>
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+##Para los inputs 
+<p> Para el formulario fue necesario implementar varios tipos de inputs, cada uno diseñado como un componente aparte para garantizar flexibilidad y reutilización en diferentes contextos. Los tipos principales incluyen: **inputs de texto**, **selects** y **ubicación/location** (un input combinado de país, estado y ciudad). Todos estos inputs comparten un enfoque centrado en validación y retroalimentación visual usando Tailwind CSS para mantener una estética uniforme. </p>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+###Input de Texto o escritura
+<p> El componente `Input.jsx` se encarga de manejar los campos de texto (como nombre, correo, teléfono, etc.). Incluye validación personalizada a través de funciones pasadas como `props`, permitiendo mostrar mensajes de error específicos para cada caso. </p>
+
+Características principales:
+
+Cambia el borde según el **estado** del input (empty, valid, invalid).
+Muestra mensajes de error o confirmación según la** validación**.
+Controla el** estado** del input de manera local con useState.
+
+Props:
+- **labelFor**: Etiqueta del input.
+- **type**: Tipo de input (ej. text, email, tel, etc.).
+- **validate**: Función de validación personalizada.
+- **placeholderText**: Texto de marcador de posición.
+- **handleChangeInput**: Función para notificar al componente padre sobre los cambios.
+</p>
+
+###Input Select
+<p> El componente **SelectInput.jsx** maneja inputs de tipo select (desplegables), usados para opciones predefinidas como sexo, estado civil, carrera, etc. Implementa una validación simple basada en la selección o ausencia de un valor. </p>
+
+Características principales:
+Cambia el borde y muestra mensajes según el estado (empty, valid, invalid).
+
+Props:
+- **labelFor**: Etiqueta del select.
+- **options**: Opciones disponibles en el desplegable.
+- **handleChangeInput**: Función para notificar al componente padre.
+- **disabled**: Deshabilita el input según condiciones externas.
+</p>
+
+###Input de Ubicación
+<p> El componente **LocationSelector.jsx** es un input especial que combina tres selectores (país, estado y ciudad), conectados a una API externa para cargar las opciones de manera dinámica. </p>
+
+Flujo de funcionamiento:
+- País: Al seleccionar un país, se cargan sus estados, (se utiliza el** hook de UseEffect** para hacer el fetch hacia la api)
+- Estado: Al seleccionar un estado, se cargan sus ciudades.
+- Ciudad: Permite seleccionar la ciudad dentro del estado elegido.
+
+Características principales:
+Usa fetch para obtener datos de la API Country State City.
+Almacena los valores seleccionados en useState para actualizaciones dinámicas.
+
+Props:
+- **handleChangeInput:** Notifica al componente padre con los valores seleccionados.
+- Validaciones integradas que garantizan la selección en cada paso.
+</p>
